@@ -1,0 +1,52 @@
+
+//B
+
+SELECT 
+info ->> 'customer' AS "Person Who bought Diaper and Beer" 
+FROM "03032020".orders WHERE info -> 'items' ->> 'product' = 'Beer' 
+
+INTERSECT 
+
+SELECT 
+info ->> 'customer' FROM "03032020".orders 
+WHERE info -> 'items' ->> 'product' = 'Diaper'
+
+//C
+SELECT 
+	info ->> 'customer' AS "Customer who bought the least Item", 
+	info -> 'items' ->> 'product' AS "Product", 
+	MIN ( CAST( info -> 'items' ->> 'qty' AS INTEGER)) AS "# of Items" 
+	
+FROM "03032020".orders 
+
+GROUP BY 
+	info ->> 'customer', info -> 'items' ->> 'product' 
+	
+LIMIT 1
+
+//D
+SELECT 
+	info ->> 'customer' AS "Customer who bought the most Item", 
+	info -> 'items' ->> 'product' AS "Product", 
+	MAX ( CAST( info -> 'items' ->> 'qty' AS INTEGER)) AS "# of Items" 
+	
+FROM "03032020".orders
+
+GROUP BY 
+	info ->> 'customer', info -> 'items' ->> 'product', info -> 'items' ->> 'qty'
+ORDER BY 
+	CAST(info -> 'items' ->> 'qty' AS INTEGER) DESC
+LIMIT 1
+
+//E
+FUNCTION
+SELECT
+SUM (
+      CAST (
+         info -> 'items' ->> 'qty' AS INTEGER
+      )
+   )
+FROM "03032020".orders
+
+
+SELECT "03032020".sum()
